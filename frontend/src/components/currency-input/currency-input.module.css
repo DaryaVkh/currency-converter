@@ -1,0 +1,31 @@
+.CurrencyWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-bottom: 2vh;
+}
+
+.InputWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.CurrencyLabel {
+    font-weight: bold;
+    font-size: 24px;
+    margin-right: 1vw;
+}
+
+.CurrencyInput {
+    font-size: 24px;
+    padding: 1vh 0.5vw;
+    width: 80%;
+}
+
+.CurrencyName {
+    padding: 0;
+    margin: 0;
+    color: darkgray;
+}
