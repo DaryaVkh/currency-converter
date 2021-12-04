@@ -6,13 +6,14 @@ import CurrencyOption from './components/currency-option/currency-option';
 import { CurrencyApiService } from './api/currency-api.service';
 import { CurrentRates } from './entities/api/currency-api.interfaces';
 
+const defaultCurrencies = ['USD', 'EUR', 'BYN', 'RUB', 'UAH', 'PLN'];
+
 const App: FC = () => {
     const [currencyRate, setCurrencyRate] = useState<CurrentRates>();
     const [currencyName, setCurrencyName] = useState<Record<string, string>>();
     const [additionCurrencies, setAdditionCurrencies] = useState<string[]>([]);
     const [currencyValue, setCurrencyValue] = useState<string>("0");
     const [changedCurrency, setChangedCurrency] = useState<string>('EUR');
-    const defaultCurrencies = ['USD', 'EUR', 'BYN', 'RUB', 'UAH', 'PLN'];
 
     useEffect(() => {
         CurrencyApiService.getCurrentRate()
@@ -43,32 +44,55 @@ const App: FC = () => {
         if (!currencyName || !currencyRate) {
             return;
         }
-        console.log(changedCurrency);
-        console.log(currencyValue);
+
         return Object.entries(currencyName).map(([key, value]: [string, string]) => {
             if (defaultCurrencies.includes(key)) {
                 return <CurrencyInput key={key} abbreviation={key} fullName={value}
                                       rate={currencyRate.rates[key]}
                                       rates={currencyRate.rates}
+                                      isAdditionCurrency={false}
                                       changedValue={currencyValue}
                                       onValueChange={setCurrencyValue}
-                                      onChangedCurrencyChange={setChangedCurrency}
+                                      onCurrentCurrencyChange={setChangedCurrency}
                                       changedCurrency={changedCurrency} />
+            } else {
+                return null;
             }
         });
     }
 
     const renderAdditionCurrencies = () => {
+        if (!currencyName || !currencyRate) {
+            return;
+        }
 
+        return Object.entries(currencyName).map(([key, value]: [string, string]) => {
+            if (additionCurrencies.includes(key)) {
+                return <CurrencyInput key={key} abbreviation={key} fullName={value}
+                                      rate={currencyRate.rates[key]}
+                                      rates={currencyRate.rates}
+                                      isAdditionCurrency={true}
+                                      deleteAdditionCurrency={setAdditionCurrencies}
+                                      changedValue={currencyValue}
+                                      onValueChange={setCurrencyValue}
+                                      onCurrentCurrencyChange={setChangedCurrency}
+                                      changedCurrency={changedCurrency} />
+            } else {
+                return null;
+            }
+        });
     }
 
     const renderOptions = () => {
         if (!currencyName || !currencyRate) {
             return;
         }
+
         return Object.entries(currencyName).map(([key, value]: [string, string]) => {
-            if (!defaultCurrencies.includes(key) && key in currencyRate.rates) {
-                return <CurrencyOption key={key} abbreviation={key} name={value} />
+            if (!defaultCurrencies.includes(key) && !additionCurrencies.includes(key) && key in currencyRate.rates) {
+                return <CurrencyOption key={key} abbreviation={key} name={value} onAddCurrency={setAdditionCurrencies} />
+            } else {
+                return null;
             }
         });
     }

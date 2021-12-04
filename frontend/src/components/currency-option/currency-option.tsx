@@ -4,7 +4,7 @@ import classes from './currency-option.module.scss';
 
 const CurrencyOption: FC<CurrencyOptionProps> = props => {
     const handleAddCurrency = () => {
-        
+        props.onAddCurrency(arr => [...arr, props.abbreviation]);
     }
     
     return <li className={classes.OtherCurrency} onClick={handleAddCurrency}><b>{props.abbreviation}</b> {props.name}</li>

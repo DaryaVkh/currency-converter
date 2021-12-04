@@ -1,7 +1,7 @@
 import React, {FC, useEffect} from 'react';
-import { useState } from 'react';
 import { CurrencyInputProps } from '../../entities/currency-input/currency-input.interfaces';
 import classes from './currency-input.module.scss';
+import ClearIcon from '@mui/icons-material/Clear';
 
 const CurrencyInput: FC<CurrencyInputProps> = props => {
     useEffect(() => {
@@ -20,8 +20,12 @@ const CurrencyInput: FC<CurrencyInputProps> = props => {
 
     const handleChangeValue = (event: React.SyntheticEvent) => {
         let input = (event.target as HTMLInputElement).value;
-        props.onChangedCurrencyChange(props.abbreviation);
+        props.onCurrentCurrencyChange(props.abbreviation);
         props.onValueChange(input);
+    }
+
+    const handleDeleteAdditionCurrency = (event: React.SyntheticEvent) => {
+        props.deleteAdditionCurrency?.(additionCurrencies => additionCurrencies.filter(ac => ac !== props.abbreviation));
     }
 
     return (
@@ -34,6 +38,12 @@ const CurrencyInput: FC<CurrencyInputProps> = props => {
                                : Math.round(+props.changedValue / props.rates[props.changedCurrency] * props.rate * 100) / 100}
                        onChange={handleChangeValue} />
                 <label className={classes.CurrencyLabel} htmlFor={props.abbreviation}>{props.abbreviation}</label>
+                {
+                    props.isAdditionCurrency
+                        ? <ClearIcon sx={{order: 2, position: 'absolute', right: '-5%', color: 'darkgray', cursor: 'pointer'}}
+                                     onClick={handleDeleteAdditionCurrency} />
+                        : null
+                }
             </div>
             <p className={classes.CurrencyName}>{props.fullName}</p>
         </div>
