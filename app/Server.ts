@@ -1,28 +1,22 @@
 import {Express, Request, Response} from "express";
 import express from "express";
 import * as path from "path";
+import { CurrencyApiService } from './api/currency-api.service';
+import config from '../config.json';
 
-export class Server {
+const app = express();
 
-    private app: Express;
+app.use(express.static(path.join(__dirname, config.frontendFolder)));
 
-    constructor(app: Express) {
-        this.app = app;
+app.get("/v1/api/currency-name", async (req: Request, res: Response) => {
+    const currencyRes = await CurrencyApiService.getAllCurrencies();
+    res.send(currencyRes);
+});
 
-        this.app.use(express.static(path.resolve("./") + "/build/frontend"));
+app.get("/v1/api/currency-rate", async (req: Request, res: Response) => {
+    const rateRes = await CurrencyApiService.getCurrentRate();
+    res.send(rateRes);
+});
 
-        this.app.get("/api", (req: Request, res: Response): void => {
-            res.send("You have reached the API!");
-        });
-
-        this.app.get("*", (req: Request, res: Response): void => {
-            res.sendFile(path.resolve("./") + "/build/frontend/index.html");
-        });
-    }
-
-    public start(port: number): void {
-        this.app.listen(port, () => console.log(`Server listening on port ${port}!`));
-    }
-
-}
+app.listen(config.serverPort, () => console.log(`Server listening on port ${config.serverPort}!`));
 

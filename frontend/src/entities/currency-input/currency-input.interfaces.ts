@@ -1,11 +1,13 @@
+import { Dispatch, SetStateAction } from "react";
+
 export interface CurrencyInputProps {
     abbreviation: string;
-    name: string;
     fullName: string;
-}
-
-export interface Data {
-    Cur_Name: string;
-    Cur_Abbreviation: string;
-    Cur_OfficialRate: number;
+    rate: number;
+    // value: string;
+    rates: Record<string, number>;
+    onValueChange: Dispatch<SetStateAction<string>>;
+    onChangedCurrencyChange: Dispatch<SetStateAction<string>>;
+    changedCurrency: string;
+    changedValue: string;
 }
