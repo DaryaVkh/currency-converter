@@ -4,31 +4,33 @@ import CurrencyInput from './components/currency-input/currency-input';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import CurrencyOption from './components/currency-option/currency-option';
 import { CurrencyApiService } from './api/currency-api.service';
-import { CurrentRates } from './entities/api/currency-api.interfaces';
-
-const defaultCurrencies = ['USD', 'EUR', 'BYN', 'RUB', 'UAH', 'PLN'];
+import {CurrencyDescription, CurrencyNames, CurrentRates } from './entities/api/currency-api.interfaces';
+import { defaultCurrencies, unsupportedCurrencies } from './entities/common/common.constants';
 
 const App: FC = () => {
-    const [currencyRate, setCurrencyRate] = useState<CurrentRates>();
-    const [currencyName, setCurrencyName] = useState<Record<string, string>>();
+    const [currencyRate, setCurrencyRate] = useState<CurrentRates>({rates: {}});
+    const [currencyName, setCurrencyName] = useState<CurrencyNames>();
     const [additionCurrencies, setAdditionCurrencies] = useState<string[]>([]);
     const [currencyValue, setCurrencyValue] = useState<string>("0");
     const [changedCurrency, setChangedCurrency] = useState<string>('EUR');
+    const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
-        CurrencyApiService.getCurrentRate()
+        CurrencyApiService.getCurrentRate(defaultCurrencies)
             .then(setCurrencyRate)
             .then(() => {
                 CurrencyApiService.getAllCurrencies().then(setCurrencyName);
+            })
+            .then(() => {
+                setIsLoaded(true);
             });
     }, []);
 
     useEffect(() => {
-        let otherCurrencies = document.querySelector(`.${classes.OtherCurrencies}`) as HTMLUListElement;
-
         const closeMenuOnClick = (event: MouseEvent) => {
-            let el = event.target as HTMLElement;
-            if (!el.classList.contains(`.${classes.OtherCurrency}`) && otherCurrencies.classList.contains(classes.active)) {
+            let element = event.target as HTMLElement;
+            let otherCurrencies = document.querySelector(`.${classes.OtherCurrencies}`) as HTMLUListElement;
+            if (!element.classList.contains(`.${classes.OtherCurrency}`) && otherCurrencies.classList.contains(classes.active)) {
                 otherCurrencies.classList.remove(classes.active);
             }
         }
@@ -45,9 +47,9 @@ const App: FC = () => {
             return;
         }
 
-        return Object.entries(currencyName).map(([key, value]: [string, string]) => {
+        return Object.entries(currencyName.symbols).map(([key, value]: [string, CurrencyDescription]) => {
             if (defaultCurrencies.includes(key)) {
-                return <CurrencyInput key={key} abbreviation={key} fullName={value}
+                return <CurrencyInput key={key} abbreviation={key} fullName={value.description}
                                       rate={currencyRate.rates[key]}
                                       rates={currencyRate.rates}
                                       isAdditionCurrency={false}
@@ -66,9 +68,9 @@ const App: FC = () => {
             return;
         }
 
-        return Object.entries(currencyName).map(([key, value]: [string, string]) => {
+        return Object.entries(currencyName.symbols).map(([key, value]: [string, CurrencyDescription]) => {
             if (additionCurrencies.includes(key)) {
-                return <CurrencyInput key={key} abbreviation={key} fullName={value}
+                return <CurrencyInput key={key} abbreviation={key} fullName={value.description}
                                       rate={currencyRate.rates[key]}
                                       rates={currencyRate.rates}
                                       isAdditionCurrency={true}
@@ -88,9 +90,9 @@ const App: FC = () => {
             return;
         }
 
-        return Object.entries(currencyName).map(([key, value]: [string, string]) => {
-            if (!defaultCurrencies.includes(key) && !additionCurrencies.includes(key) && key in currencyRate.rates) {
-                return <CurrencyOption key={key} abbreviation={key} name={value} onAddCurrency={setAdditionCurrencies} />
+        return Object.entries(currencyName.symbols).map(([key, value]: [string, CurrencyDescription]) => {
+            if (!defaultCurrencies.includes(key) && !additionCurrencies.includes(key) && !unsupportedCurrencies.includes(key)) {
+                return <CurrencyOption key={key} abbreviation={key} name={value.description} onAddCurrency={setAdditionCurrencies} onAddRate={setCurrencyRate} />
             } else {
                 return null;
             }
@@ -107,18 +109,28 @@ const App: FC = () => {
         <div className={classes.App}>
             <h1>Currency converter</h1>
             <div className={classes.ConverterWrapper}>
-                {renderDefaultCurrencies()}
-                {renderAdditionCurrencies()}
+                {
+                    isLoaded
+                        ?
+                            <React.Fragment>
+                                {renderDefaultCurrencies()}
+                                {renderAdditionCurrencies()}
 
-                <div className={classes.dropdownWrapper}>
-                    <button className={classes.AddCurrencyButton} onClick={handleAddButtonClick}>
-                        <AddCircleOutlineOutlinedIcon sx={{marginRight: '0.5vw'}} />
-                        Add currency
-                    </button>
-                    <ul className={classes.OtherCurrencies}>
-                        {renderOptions()}
-                    </ul>
-                </div>
+                                <div className={classes.dropdownWrapper}>
+                                    <button className={classes.AddCurrencyButton} onClick={handleAddButtonClick}>
+                                        <AddCircleOutlineOutlinedIcon sx={{marginRight: '0.5vw'}} />
+                                        Add currency
+                                    </button>
+                                    <ul className={classes.OtherCurrencies}>
+                                        {renderOptions()}
+                                    </ul>
+                                </div>
+                            </React.Fragment>
+                        :
+                            <svg className={classes.loading}>
+                                <circle className={classes.loadingSvg} cx="50" cy="50" r="20" fill="none" strokeWidth="3" strokeMiterlimit="10" />
+                            </svg>
+                }
             </div>
         </div>
     );

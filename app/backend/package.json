@@ -8,7 +8,7 @@
     "node-fetch": "2"
   },
   "scripts": {
-    "start": "ts-node ./app/server.ts",
+    "start": "ts-node server.ts",
     "build": "npx tsc"
   },
   "devDependencies": {

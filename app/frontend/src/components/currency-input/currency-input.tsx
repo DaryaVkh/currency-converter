@@ -40,7 +40,7 @@ const CurrencyInput: FC<CurrencyInputProps> = props => {
                 <label className={classes.CurrencyLabel} htmlFor={props.abbreviation}>{props.abbreviation}</label>
                 {
                     props.isAdditionCurrency
-                        ? <ClearIcon sx={{order: 2, position: 'absolute', right: '-5%', color: 'darkgray', cursor: 'pointer'}}
+                        ? <ClearIcon sx={{order: 2, position: 'absolute', right: '-5%', color: 'darkgray', cursor: 'pointer', fontSize: '1.5vw'}}
                                      onClick={handleDeleteAdditionCurrency} />
                         : null
                 }

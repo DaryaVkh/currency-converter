@@ -2,7 +2,7 @@ import {Express, Request, Response} from "express";
 import express from "express";
 import * as path from "path";
 import { CurrencyApiService } from './api/currency-api.service';
-import config from '../config.json';
+import config from './config.json';
 
 const app = express();
 
@@ -14,7 +14,8 @@ app.get("/v1/api/currency-name", async (req: Request, res: Response) => {
 });
 
 app.get("/v1/api/currency-rate", async (req: Request, res: Response) => {
-    const rateRes = await CurrencyApiService.getCurrentRate();
+    const query = req.query.symbols as string;
+    const rateRes = await CurrencyApiService.getCurrentRate(query);
     res.send(rateRes);
 });
 
