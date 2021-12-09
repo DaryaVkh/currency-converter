@@ -6,9 +6,9 @@ const CurrencyOption: FC<CurrencyOptionProps> = props => {
     const handleAddCurrency = () => {
         props.onAddRate(props.abbreviation)
             .then(() => props.onAddCurrency(props.abbreviation));
-    }
+    };
     
-    return <li className={classes.otherCurrency} onClick={handleAddCurrency}><b>{props.abbreviation}</b> {props.name}</li>
+    return <li className={classes.otherCurrency} onClick={handleAddCurrency}><b>{props.abbreviation}</b> {props.name}</li>;
 }
 
 export default CurrencyOption;

@@ -16,7 +16,7 @@ const CurrencyInput: FC<CurrencyInputProps> = props => {
 
         return () => {
             document.removeEventListener('wheel', handleNumberInputWheel);
-        }
+        };
     }, []);
 
     const handleChangeValue = (event: React.SyntheticEvent) => {

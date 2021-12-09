@@ -1,4 +1,4 @@
-import {CurrencyNames, CurrencyRates} from "../../../entities/api/currency-api.interfaces";
+import {CurrencyNames, CurrencyRates} from '../../../entities/api/currency-api.interfaces';
 
 export interface AppReducerState {
     currencyNames: CurrencyNames,

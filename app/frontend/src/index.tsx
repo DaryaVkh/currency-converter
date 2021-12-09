@@ -6,7 +6,7 @@ import {applyMiddleware, compose, createStore, Store} from 'redux';
 import {Provider} from 'react-redux';
 import rootReducer from './redux/reducers/root-reducer';
 import reduxThunk from 'redux-thunk';
-import {AppReducerState} from "./redux/reducers/app-reducer/app-reducer.interfaces";
+import {AppReducerState} from './redux/reducers/app-reducer/app-reducer.interfaces';
 
 export const composeEnhancers = (window && (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
 

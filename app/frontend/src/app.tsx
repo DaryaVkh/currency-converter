@@ -5,8 +5,8 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import CurrencyOption from './components/currency-option/currency-option';
 import {CurrencyDescription} from './entities/api/currency-api.interfaces';
 import {defaultCurrencies, unsupportedCurrencies} from './entities/common/common.constants';
-import {connect} from "react-redux";
-import {AppProps, AppState, AppDispatchProps, AppStateProps} from "./entities/app/app.interfaces";
+import {connect} from 'react-redux';
+import {AppProps, AppState, AppDispatchProps, AppStateProps} from './entities/app/app.interfaces';
 import {
     addCurrency,
     changeBaseCurrency,
@@ -15,15 +15,15 @@ import {
     getCurrencyNamesAndRates,
     getCurrencyRate,
     updateCurrencyRates
-} from "./redux/actions/app-actions/app-actions";
-import {Dispatch} from "redux";
-import {ThunkDispatch} from "redux-thunk";
-import {AppAction} from "./redux/reducers/app-reducer/app-reducer.interfaces";
+} from './redux/actions/app-actions/app-actions';
+import {Dispatch} from 'redux';
+import {ThunkDispatch} from 'redux-thunk';
+import {AppAction} from './redux/reducers/app-reducer/app-reducer.interfaces';
 
 const App: FC<AppProps> = props => {
     useEffect(() => {
         props.onGetCurrencyNamesAndRates().then(() => {
-            setTimeout(() => updateCurrencyRates(), 10000);
+            setTimeout(() => updateCurrencyRates(), 1800000);
         });
     }, []);
 
@@ -48,7 +48,7 @@ const App: FC<AppProps> = props => {
         props.onUpdateCurrencyRate();
         setTimeout(() => {
             updateCurrencyRates()
-        }, 10000);
+        }, 1800000);
     }
 
     const renderDefaultCurrencies = () => {
@@ -144,8 +144,8 @@ const App: FC<AppProps> = props => {
                         </React.Fragment>
                         :
                         <svg className={classes.loading}>
-                            <circle className={classes.loadingSvg} cx="50" cy="50" r="20" fill="none" strokeWidth="3"
-                                    strokeMiterlimit="10"/>
+                            <circle className={classes.loadingSvg} cx='50' cy='50' r='20' fill='none' strokeWidth='3'
+                                    strokeMiterlimit='10' />
                         </svg>
                 }
             </div>

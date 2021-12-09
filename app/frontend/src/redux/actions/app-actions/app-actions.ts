@@ -1,7 +1,7 @@
 import { ThunkAction, ThunkDispatch } from 'redux-thunk'
-import {CurrencyNames, CurrencyRates} from "../../../entities/api/currency-api.interfaces";
-import {CurrencyApiService} from "../../../api/currency-api.service";
-import {defaultCurrencies} from "../../../entities/common/common.constants";
+import {CurrencyNames, CurrencyRates} from '../../../entities/api/currency-api.interfaces';
+import {CurrencyApiService} from '../../../api/currency-api.service';
+import {defaultCurrencies} from '../../../entities/common/common.constants';
 import {
     SET_CURRENCY_NAMES,
     SET_CURRENCY_RATES,
@@ -10,28 +10,28 @@ import {
     CHANGE_BASE_CURRENCY,
     CHANGE_BASE_CURRENCY_VALUE,
     DELETE_CURRENCY
-} from "./app-action-types";
-import {AppAction} from "../../reducers/app-reducer/app-reducer.interfaces";
-import {store} from "../../../index";
+} from './app-action-types';
+import {AppAction} from '../../reducers/app-reducer/app-reducer.interfaces';
+import {store} from '../../../index';
 
 function setLoaded() {
     return {
         type: SET_LOADED
-    }
+    };
 }
 
 function setCurrencyNames(currencyNames: CurrencyNames) {
     return {
         type: SET_CURRENCY_NAMES,
         payload: currencyNames
-    }
+    };
 }
 
 function setCurrencyRates(currencyRates: CurrencyRates) {
     return {
         type: SET_CURRENCY_RATES,
         payload: currencyRates
-    }
+    };
 }
 
 export const getCurrencyNamesAndRates = (): ThunkAction<Promise<void>, {}, {}, AppAction> => {
@@ -47,7 +47,7 @@ export const getCurrencyNamesAndRates = (): ThunkAction<Promise<void>, {}, {}, A
             .then(() => {
                 dispatch(setLoaded())
             });
-    }
+    };
 }
 
 export const getCurrencyRate = (newCurrency: string): ThunkAction<Promise<void>, {}, {}, AppAction> => {
@@ -56,7 +56,7 @@ export const getCurrencyRate = (newCurrency: string): ThunkAction<Promise<void>,
             .then((currencyRates) => {
                 dispatch(setCurrencyRates(currencyRates))
             });
-    }
+    };
 }
 
 export const updateCurrencyRates = (): ThunkAction<Promise<void>, {}, {}, AppAction> => {
@@ -66,33 +66,33 @@ export const updateCurrencyRates = (): ThunkAction<Promise<void>, {}, {}, AppAct
             .then((currencyRates) => {
                 dispatch(setCurrencyRates(currencyRates));
             });
-    }
+    };
 }
 
 export function changeBaseCurrency(newBaseCurrency: string): AppAction {
     return {
         type: CHANGE_BASE_CURRENCY,
         payload: newBaseCurrency
-    }
+    };
 }
 
 export function changeBaseCurrencyValue(newBaseCurrencyValue: string): AppAction {
     return {
         type: CHANGE_BASE_CURRENCY_VALUE,
         payload: newBaseCurrencyValue
-    }
+    };
 }
 
 export function addCurrency(newCurrency: string): AppAction {
     return {
         type: ADD_CURRENCY,
         payload: newCurrency
-    }
+    };
 }
 
 export function deleteCurrency(deletedCurrency: string): AppAction {
     return {
         type: DELETE_CURRENCY,
         payload: deletedCurrency
-    }
+    };
 }
