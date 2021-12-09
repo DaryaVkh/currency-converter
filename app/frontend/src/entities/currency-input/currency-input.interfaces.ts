@@ -1,14 +1,14 @@
-import { Dispatch, SetStateAction } from "react";
+import { AppAction } from "../../redux/reducers/app-reducer/app-reducer.interfaces";
 
 export interface CurrencyInputProps {
     abbreviation: string;
     fullName: string;
     rate: number;
-    rates: Record<string, number>;
+    allRates: Record<string, number>;
     isAdditionCurrency: boolean;
-    deleteAdditionCurrency?: Dispatch<SetStateAction<string[]>>;
-    onValueChange: Dispatch<SetStateAction<string>>;
-    onCurrentCurrencyChange: Dispatch<SetStateAction<string>>;
-    changedCurrency: string;
-    changedValue: string;
+    deleteAdditionCurrency?: (deletedCurrency: string) => AppAction;
+    onChangeBaseCurrencyValue: (newBaseCurrencyValue: string) => AppAction;
+    onChangeBaseCurrency: (newBaseCurrency: string) => AppAction;
+    baseCurrency: string;
+    baseValue: string;
 }

@@ -7,6 +7,6 @@ export class CurrencyApiService extends ApiService {
     }
 
     static getCurrentRate(query: string): Promise<CurrentRates> {
-        return CurrencyApiService.get(`https://api.exchangerate.host/latest?${query}`).then(res => res.json());
+        return CurrencyApiService.get(`https://api.exchangerate.host/latest?symbols=${query}`).then(res => res.json());
     }
 }

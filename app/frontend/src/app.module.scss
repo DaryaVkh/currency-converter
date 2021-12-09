@@ -11,7 +11,7 @@ h1 {
   margin: 2vh;
 }
 
-.ConverterWrapper {
+.converterWrapper {
   width: 30%;
   background: linear-gradient(90deg, #b9deed, #efefef);
   display: inline-flex;
@@ -23,7 +23,7 @@ h1 {
 .dropdownWrapper {
   position: relative;
 
-  .AddCurrencyButton {
+  .addCurrencyButton {
     position: relative;
     font-size: 18px;
     display: flex;
@@ -37,7 +37,7 @@ h1 {
     color: white;
   }
 
-  .OtherCurrencies {
+  .additionCurrencies {
     position: absolute;
     margin: 0;
     padding: 0;
@@ -49,7 +49,7 @@ h1 {
     overflow-x: hidden;
     max-height: 170px;
 
-    &.active {
+    &.visibleAdditionCurrencies {
       display: block;
     }
   }

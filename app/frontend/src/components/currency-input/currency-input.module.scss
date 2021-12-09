@@ -1,11 +1,11 @@
-.CurrencyWrapper {
+.currencyWrapper {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     margin-bottom: 2vh;
 }
 
-.InputWrapper {
+.inputWrapper {
     position: relative;
     display: flex;
     align-items: center;
@@ -13,7 +13,7 @@
     width: 100%;
 }
 
-.CurrencyLabel {
+.currencyLabel {
     font-weight: bold;
     font-size: 24px;
     margin-right: 1vw;
@@ -21,24 +21,24 @@
     order: 0;
 }
 
-.CurrencyInput {
+.currencyInput {
     order: 1;
     font-size: 24px;
     padding: 1vh 0.5vw;
     width: 80%;
     border: 1px solid lightgray;
     border-radius: 2px;
-}
 
-.CurrencyInput:focus {
-    border-color: #66afe9;
+    &:focus {
+        border-color: #66afe9;
 
-    ~ label {
-        color: black;
+        ~ label {
+            color: black;
+        }
     }
 }
 
-.CurrencyName {
+.currencyName {
     padding: 0;
     margin: 0;
     color: darkgray;

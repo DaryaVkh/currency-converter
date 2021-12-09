@@ -1,62 +1,72 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect} from 'react';
 import classes from './app.module.scss';
 import CurrencyInput from './components/currency-input/currency-input';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import CurrencyOption from './components/currency-option/currency-option';
-import { CurrencyApiService } from './api/currency-api.service';
-import {CurrencyDescription, CurrencyNames, CurrentRates } from './entities/api/currency-api.interfaces';
-import { defaultCurrencies, unsupportedCurrencies } from './entities/common/common.constants';
+import {CurrencyDescription} from './entities/api/currency-api.interfaces';
+import {defaultCurrencies, unsupportedCurrencies} from './entities/common/common.constants';
+import {connect} from "react-redux";
+import {AppProps, AppState, AppDispatchProps, AppStateProps} from "./entities/app/app.interfaces";
+import {
+    addCurrency,
+    changeBaseCurrency,
+    changeBaseCurrencyValue,
+    deleteCurrency,
+    getCurrencyNamesAndRates,
+    getCurrencyRate,
+    updateCurrencyRates
+} from "./redux/actions/app-actions/app-actions";
+import {Dispatch} from "redux";
+import {ThunkDispatch} from "redux-thunk";
+import {AppAction} from "./redux/reducers/app-reducer/app-reducer.interfaces";
 
-const App: FC = () => {
-    const [currencyRate, setCurrencyRate] = useState<CurrentRates>({rates: {}});
-    const [currencyName, setCurrencyName] = useState<CurrencyNames>();
-    const [additionCurrencies, setAdditionCurrencies] = useState<string[]>([]);
-    const [currencyValue, setCurrencyValue] = useState<string>("0");
-    const [changedCurrency, setChangedCurrency] = useState<string>('EUR');
-    const [isLoaded, setIsLoaded] = useState(false);
-
+const App: FC<AppProps> = props => {
     useEffect(() => {
-        CurrencyApiService.getCurrentRate(defaultCurrencies)
-            .then(setCurrencyRate)
-            .then(() => {
-                CurrencyApiService.getAllCurrencies().then(setCurrencyName);
-            })
-            .then(() => {
-                setIsLoaded(true);
-            });
+        props.onGetCurrencyNamesAndRates().then(() => {
+            setTimeout(() => updateCurrencyRates(), 10000);
+        });
     }, []);
 
     useEffect(() => {
-        const closeMenuOnClick = (event: MouseEvent) => {
-            let element = event.target as HTMLElement;
-            let otherCurrencies = document.querySelector(`.${classes.OtherCurrencies}`) as HTMLUListElement;
-            if (!element.classList.contains(`.${classes.OtherCurrency}`) && otherCurrencies.classList.contains(classes.active)) {
-                otherCurrencies.classList.remove(classes.active);
+        const closeDropdownOptionsOnClick = (event: MouseEvent) => {
+            const clickedElement = event.target as HTMLElement;
+            const additionCurrencies = document.querySelector(`.${classes.additionCurrencies}`) as HTMLUListElement;
+            if (!clickedElement.classList.contains(`.${classes.additionCurrency}`)
+                && additionCurrencies.classList.contains(classes.visibleAdditionCurrencies)) {
+                additionCurrencies.classList.remove(classes.visibleAdditionCurrencies);
             }
         }
 
-        document.addEventListener('click', closeMenuOnClick);
+        document.addEventListener('click', closeDropdownOptionsOnClick);
 
         return () => {
-            document.removeEventListener('click', closeMenuOnClick);
+            document.removeEventListener('click', closeDropdownOptionsOnClick);
         }
     }, []);
-    
+
+    const updateCurrencyRates = () => {
+        props.onUpdateCurrencyRate();
+        setTimeout(() => {
+            updateCurrencyRates()
+        }, 10000);
+    }
+
     const renderDefaultCurrencies = () => {
-        if (!currencyName || !currencyRate) {
+        if (!props.currencyNames || !props.currencyRates) {
             return;
         }
 
-        return Object.entries(currencyName.symbols).map(([key, value]: [string, CurrencyDescription]) => {
+        return Object.entries(props.currencyNames.symbols).map(([key, value]: [string, CurrencyDescription]) => {
             if (defaultCurrencies.includes(key)) {
-                return <CurrencyInput key={key} abbreviation={key} fullName={value.description}
-                                      rate={currencyRate.rates[key]}
-                                      rates={currencyRate.rates}
+                return <CurrencyInput key={key} abbreviation={key}
+                                      fullName={value.description}
+                                      rate={props.currencyRates.rates[key]}
+                                      allRates={props.currencyRates.rates}
                                       isAdditionCurrency={false}
-                                      changedValue={currencyValue}
-                                      onValueChange={setCurrencyValue}
-                                      onCurrentCurrencyChange={setChangedCurrency}
-                                      changedCurrency={changedCurrency} />
+                                      baseValue={props.currentBaseCurrencyValue}
+                                      onChangeBaseCurrencyValue={props.onChangeBaseCurrencyValue}
+                                      onChangeBaseCurrency={props.onChangeBaseCurrency}
+                                      baseCurrency={props.currentBaseCurrency}/>
             } else {
                 return null;
             }
@@ -64,21 +74,21 @@ const App: FC = () => {
     }
 
     const renderAdditionCurrencies = () => {
-        if (!currencyName || !currencyRate) {
+        if (!props.currencyNames || !props.currencyRates) {
             return;
         }
 
-        return Object.entries(currencyName.symbols).map(([key, value]: [string, CurrencyDescription]) => {
-            if (additionCurrencies.includes(key)) {
+        return Object.entries(props.currencyNames.symbols).map(([key, value]: [string, CurrencyDescription]) => {
+            if (props.additionCurrencies.includes(key)) {
                 return <CurrencyInput key={key} abbreviation={key} fullName={value.description}
-                                      rate={currencyRate.rates[key]}
-                                      rates={currencyRate.rates}
+                                      rate={props.currencyRates.rates[key]}
+                                      allRates={props.currencyRates.rates}
                                       isAdditionCurrency={true}
-                                      deleteAdditionCurrency={setAdditionCurrencies}
-                                      changedValue={currencyValue}
-                                      onValueChange={setCurrencyValue}
-                                      onCurrentCurrencyChange={setChangedCurrency}
-                                      changedCurrency={changedCurrency} />
+                                      deleteAdditionCurrency={props.onDeleteCurrency}
+                                      baseValue={props.currentBaseCurrencyValue}
+                                      onChangeBaseCurrencyValue={props.onChangeBaseCurrencyValue}
+                                      onChangeBaseCurrency={props.onChangeBaseCurrency}
+                                      baseCurrency={props.currentBaseCurrency}/>
             } else {
                 return null;
             }
@@ -86,54 +96,84 @@ const App: FC = () => {
     }
 
     const renderOptions = () => {
-        if (!currencyName || !currencyRate) {
+        if (!props.currencyNames || !props.currencyRates) {
             return;
         }
 
-        return Object.entries(currencyName.symbols).map(([key, value]: [string, CurrencyDescription]) => {
-            if (!defaultCurrencies.includes(key) && !additionCurrencies.includes(key) && !unsupportedCurrencies.includes(key)) {
-                return <CurrencyOption key={key} abbreviation={key} name={value.description} onAddCurrency={setAdditionCurrencies} onAddRate={setCurrencyRate} />
+        return Object.entries(props.currencyNames.symbols).map(([key, value]: [string, CurrencyDescription]) => {
+            if (!defaultCurrencies.includes(key) && !props.additionCurrencies.includes(key) && !unsupportedCurrencies.includes(key)) {
+                return <CurrencyOption key={key} abbreviation={key} name={value.description}
+                                       onAddCurrency={props.onAddCurrency}
+                                       onAddRate={props.onGetCurrencyRate} />
             } else {
                 return null;
             }
         });
     }
 
-    const handleAddButtonClick = (event: React.SyntheticEvent) => {
+    const handleAddCurrencyButtonClick = (event: React.SyntheticEvent) => {
         event.stopPropagation();
-        let options = document.querySelector(`.${classes.OtherCurrencies}`) as HTMLUListElement;
-        options.classList.toggle(classes.active);
+        const additionCurrencies = document.querySelector(`.${classes.additionCurrencies}`) as HTMLUListElement;
+        additionCurrencies.classList.toggle(classes.visibleAdditionCurrencies);
     }
-    
+
     return (
         <div className={classes.App}>
             <h1>Currency converter</h1>
-            <div className={classes.ConverterWrapper}>
+            <div className={classes.converterWrapper}>
                 {
-                    isLoaded
+                    props.isLoaded
                         ?
-                            <React.Fragment>
-                                {renderDefaultCurrencies()}
-                                {renderAdditionCurrencies()}
+                        <React.Fragment>
 
-                                <div className={classes.dropdownWrapper}>
-                                    <button className={classes.AddCurrencyButton} onClick={handleAddButtonClick}>
-                                        <AddCircleOutlineOutlinedIcon sx={{marginRight: '0.5vw'}} />
-                                        Add currency
-                                    </button>
-                                    <ul className={classes.OtherCurrencies}>
-                                        {renderOptions()}
-                                    </ul>
-                                </div>
-                            </React.Fragment>
+                            {renderDefaultCurrencies()}
+                            {renderAdditionCurrencies()}
+
+                            <div className={classes.dropdownWrapper}>
+
+                                <button className={classes.addCurrencyButton} onClick={handleAddCurrencyButtonClick}>
+                                    <AddCircleOutlineOutlinedIcon sx={{marginRight: '0.5vw'}}/>
+                                    Add currency
+                                </button>
+
+                                <ul className={classes.additionCurrencies}>
+                                    {renderOptions()}
+                                </ul>
+
+                            </div>
+                        </React.Fragment>
                         :
-                            <svg className={classes.loading}>
-                                <circle className={classes.loadingSvg} cx="50" cy="50" r="20" fill="none" strokeWidth="3" strokeMiterlimit="10" />
-                            </svg>
+                        <svg className={classes.loading}>
+                            <circle className={classes.loadingSvg} cx="50" cy="50" r="20" fill="none" strokeWidth="3"
+                                    strokeMiterlimit="10"/>
+                        </svg>
                 }
             </div>
         </div>
     );
 }
 
-export default App;
+function mapStateToProps(state: AppState): AppStateProps {
+    return {
+        currentBaseCurrency: state.appReducer.currentBaseCurrency,
+        currentBaseCurrencyValue: state.appReducer.currentBaseCurrencyValue,
+        additionCurrencies: state.appReducer.additionCurrencies,
+        currencyNames: state.appReducer.currencyNames,
+        currencyRates: state.appReducer.currencyRates,
+        isLoaded: state.appReducer.isLoaded
+    };
+}
+
+function mapDispatchToProps(dispatch: ThunkDispatch<{}, {}, AppAction> & Dispatch<AppAction>): AppDispatchProps {
+    return {
+        onGetCurrencyNamesAndRates: async () => await dispatch(getCurrencyNamesAndRates()),
+        onUpdateCurrencyRate: async () => await dispatch(updateCurrencyRates()),
+        onGetCurrencyRate: async (newRate: string) => await dispatch(getCurrencyRate(newRate)),
+        onChangeBaseCurrency: (newBaseCurrency: string) => dispatch(changeBaseCurrency(newBaseCurrency)),
+        onChangeBaseCurrencyValue: (newBaseCurrencyValue: string) => dispatch(changeBaseCurrencyValue(newBaseCurrencyValue)),
+        onAddCurrency: (newCurrency: string) => dispatch(addCurrency(newCurrency)),
+        onDeleteCurrency: (deletedCurrency: string) => dispatch(deleteCurrency(deletedCurrency))
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

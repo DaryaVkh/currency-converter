@@ -1,9 +1,8 @@
-import { Dispatch, SetStateAction } from "react";
-import { CurrentRates } from "../api/currency-api.interfaces";
+import { AppAction } from "../../redux/reducers/app-reducer/app-reducer.interfaces";
 
 export interface CurrencyOptionProps {
     abbreviation: string;
     name: string;
-    onAddCurrency: Dispatch<SetStateAction<string[]>>;
-    onAddRate: Dispatch<SetStateAction<CurrentRates>>;
+    onAddCurrency: (newCurrency: string) => AppAction;
+    onAddRate: (newRate: string) => Promise<void>;
 }

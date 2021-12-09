@@ -1,4 +1,4 @@
-export interface CurrentRates {
+export interface CurrencyRates {
     rates: Record<string, number>;
 }
 

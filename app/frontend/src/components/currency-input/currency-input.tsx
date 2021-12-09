@@ -5,9 +5,10 @@ import ClearIcon from '@mui/icons-material/Clear';
 
 const CurrencyInput: FC<CurrencyInputProps> = props => {
     useEffect(() => {
-        function handleNumberInputWheel(event: WheelEvent) {
-            if ((document.activeElement as HTMLInputElement)?.type === 'number') {
-                (document.activeElement as HTMLInputElement).blur();
+        function handleNumberInputWheel() {
+            const numberTypeInput = document.activeElement as HTMLInputElement;
+            if (numberTypeInput && numberTypeInput.type === 'number') {
+                numberTypeInput.blur();
             }
         }
 
@@ -19,25 +20,27 @@ const CurrencyInput: FC<CurrencyInputProps> = props => {
     }, []);
 
     const handleChangeValue = (event: React.SyntheticEvent) => {
-        let input = (event.target as HTMLInputElement).value;
-        props.onCurrentCurrencyChange(props.abbreviation);
-        props.onValueChange(input);
+        const inputValue = (event.target as HTMLInputElement).value;
+        props.onChangeBaseCurrencyValue(inputValue);
+        if (props.baseCurrency !== props.abbreviation) {
+            props.onChangeBaseCurrency(props.abbreviation);
+        }
     }
 
-    const handleDeleteAdditionCurrency = (event: React.SyntheticEvent) => {
-        props.deleteAdditionCurrency?.(additionCurrencies => additionCurrencies.filter(ac => ac !== props.abbreviation));
+    const handleDeleteAdditionCurrency = () => {
+        props.deleteAdditionCurrency?.(props.abbreviation);
     }
 
     return (
-        <div className={classes.CurrencyWrapper}>
-            <div className={classes.InputWrapper}>
-                <input className={classes.CurrencyInput} type='number' id={props.abbreviation}
+        <div className={classes.currencyWrapper}>
+            <div className={classes.inputWrapper}>
+                <input className={classes.currencyInput} type='number' id={props.abbreviation}
                        value={
-                           props.abbreviation === props.changedCurrency
-                               ? props.changedValue
-                               : Math.round(+props.changedValue / props.rates[props.changedCurrency] * props.rate * 100) / 100}
+                           props.abbreviation === props.baseCurrency
+                               ? props.baseValue
+                               : Math.round(+props.baseValue / props.allRates[props.baseCurrency] * props.rate * 100) / 100 || 0}
                        onChange={handleChangeValue} />
-                <label className={classes.CurrencyLabel} htmlFor={props.abbreviation}>{props.abbreviation}</label>
+                <label className={classes.currencyLabel} htmlFor={props.abbreviation}>{props.abbreviation}</label>
                 {
                     props.isAdditionCurrency
                         ? <ClearIcon sx={{order: 2, position: 'absolute', right: '-5%', color: 'darkgray', cursor: 'pointer', fontSize: '1.5vw'}}
@@ -45,7 +48,7 @@ const CurrencyInput: FC<CurrencyInputProps> = props => {
                         : null
                 }
             </div>
-            <p className={classes.CurrencyName}>{props.fullName}</p>
+            <p className={classes.currencyName}>{props.fullName}</p>
         </div>
     );
 }
