@@ -3,10 +3,10 @@ import { CurrencyOptionProps } from '../../entities/currency-option/currency-opt
 import classes from './currency-option.module.scss';
 
 const CurrencyOption: FC<CurrencyOptionProps> = props => {
-    const handleAddCurrency = () => {
+    function handleAddCurrency() {
         props.onAddRate(props.abbreviation)
             .then(() => props.onAddCurrency(props.abbreviation));
-    };
+    }
     
     return <li className={classes.otherCurrency} onClick={handleAddCurrency}><b>{props.abbreviation}</b> {props.name}</li>;
 }

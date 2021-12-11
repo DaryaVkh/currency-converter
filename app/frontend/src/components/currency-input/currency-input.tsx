@@ -19,7 +19,7 @@ const CurrencyInput: FC<CurrencyInputProps> = props => {
         };
     }, []);
 
-    const handleChangeValue = (event: React.SyntheticEvent) => {
+    function handleChangeValue(event: React.SyntheticEvent) {
         const inputValue = (event.target as HTMLInputElement).value;
         props.onChangeBaseCurrencyValue(inputValue);
         if (props.baseCurrency !== props.abbreviation) {
@@ -27,7 +27,7 @@ const CurrencyInput: FC<CurrencyInputProps> = props => {
         }
     }
 
-    const handleDeleteAdditionCurrency = () => {
+    function handleDeleteAdditionCurrency() {
         props.deleteAdditionCurrency?.(props.abbreviation);
     }
 

@@ -44,14 +44,14 @@ const App: FC<AppProps> = props => {
         }
     }, []);
 
-    const updateCurrencyRates = () => {
+    function updateCurrencyRates() {
         props.onUpdateCurrencyRate();
         setTimeout(() => {
             updateCurrencyRates()
         }, 1800000);
     }
 
-    const renderDefaultCurrencies = () => {
+    function renderDefaultCurrencies() {
         if (!props.currencyNames || !props.currencyRates) {
             return;
         }
@@ -73,7 +73,7 @@ const App: FC<AppProps> = props => {
         });
     }
 
-    const renderAdditionCurrencies = () => {
+    function renderAdditionCurrencies() {
         if (!props.currencyNames || !props.currencyRates) {
             return;
         }
@@ -95,7 +95,7 @@ const App: FC<AppProps> = props => {
         });
     }
 
-    const renderOptions = () => {
+    function renderOptions() {
         if (!props.currencyNames || !props.currencyRates) {
             return;
         }
@@ -111,7 +111,7 @@ const App: FC<AppProps> = props => {
         });
     }
 
-    const handleAddCurrencyButtonClick = (event: React.SyntheticEvent) => {
+    function handleAddCurrencyButtonClick(event: React.SyntheticEvent) {
         event.stopPropagation();
         const additionCurrencies = document.querySelector(`.${classes.additionCurrencies}`) as HTMLUListElement;
         additionCurrencies.classList.toggle(classes.visibleAdditionCurrencies);
