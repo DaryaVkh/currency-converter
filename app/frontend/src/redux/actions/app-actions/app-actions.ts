@@ -34,7 +34,7 @@ function setCurrencyRates(currencyRates: CurrencyRates) {
     };
 }
 
-export const getCurrencyNamesAndRates = (): ThunkAction<Promise<void>, {}, {}, AppAction> => {
+export function getCurrencyNamesAndRates(): ThunkAction<Promise<void>, {}, {}, AppAction> {
     return async (dispatch: ThunkDispatch<{}, {}, AppAction>): Promise<void> => {
         return CurrencyApiService.getAllCurrencies()
             .then((currencyNames) => {
@@ -50,7 +50,7 @@ export const getCurrencyNamesAndRates = (): ThunkAction<Promise<void>, {}, {}, A
     };
 }
 
-export const getCurrencyRate = (newCurrency: string): ThunkAction<Promise<void>, {}, {}, AppAction> => {
+export function getCurrencyRate(newCurrency: string): ThunkAction<Promise<void>, {}, {}, AppAction> {
     return async (dispatch: ThunkDispatch<{}, {}, AppAction>): Promise<void> => {
         return CurrencyApiService.getCurrencyRate([newCurrency])
             .then((currencyRates) => {
@@ -59,7 +59,7 @@ export const getCurrencyRate = (newCurrency: string): ThunkAction<Promise<void>,
     };
 }
 
-export const updateCurrencyRates = (): ThunkAction<Promise<void>, {}, {}, AppAction> => {
+export function updateCurrencyRates(): ThunkAction<Promise<void>, {}, {}, AppAction> {
     return async (dispatch: ThunkDispatch<{}, {}, AppAction>): Promise<void> => {
         const actualCurrencies = [...defaultCurrencies, ...store.getState().appReducer.additionCurrencies]
         return CurrencyApiService.getCurrencyRate([...actualCurrencies])
