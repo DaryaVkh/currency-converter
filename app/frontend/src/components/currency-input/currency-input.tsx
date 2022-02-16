@@ -2,8 +2,9 @@ import React, {FC, useEffect} from 'react';
 import { CurrencyInputProps } from '../../entities/currency-input/currency-input.interfaces';
 import classes from './currency-input.module.scss';
 import ClearIcon from '@mui/icons-material/Clear';
+import {observer} from "mobx-react";
 
-const CurrencyInput: FC<CurrencyInputProps> = props => {
+const CurrencyInput: FC<CurrencyInputProps> = observer(props => {
     useEffect(() => {
         function handleNumberInputWheel() {
             const numberTypeInput = document.activeElement as HTMLInputElement;
@@ -51,6 +52,6 @@ const CurrencyInput: FC<CurrencyInputProps> = props => {
             <p className={classes.currencyName}>{props.fullName}</p>
         </div>
     );
-}
+});
 
 export default CurrencyInput;

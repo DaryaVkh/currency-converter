@@ -1,20 +1,14 @@
-import React from 'react';
+import React, {createContext} from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';
 import App from './app';
-import {applyMiddleware, compose, createStore, Store} from 'redux';
-import {Provider} from 'react-redux';
-import rootReducer from './redux/reducers/root-reducer';
-import reduxThunk from 'redux-thunk';
-import {AppReducerState} from './redux/reducers/app-reducer/app-reducer.interfaces';
+import {RootStore} from "./store/store";
+import { Provider } from 'mobx-react';
+import {configure} from "mobx";
 
-export const composeEnhancers = (window && (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
-
-export interface AppStore {
-    appReducer: AppReducerState
-}
-
-export const store: Store<AppStore> = createStore(rootReducer, composeEnhancers(applyMiddleware(reduxThunk)));
+configure({enforceActions: 'observed'});
+const store = new RootStore();
+export const StoreContext = createContext<RootStore>(store);
 
 ReactDOM.render(
     <Provider store={store}>
